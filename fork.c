@@ -1,16 +1,22 @@
+#include "shell.h"
+
+/**
+ * execute_command - executes a command
+ * @args: argument array
+ */
 void execute_command(char **args)
 {
 	pid_t pid;
 	char *cmd_path;
 
-	if (!args[0])
+	if (!args || !args[0])
 		return;
 
 	cmd_path = find_command(args[0]);
 
 	if (!cmd_path)
 	{
-		perror("./shell");
+		perror("./hsh");
 		return;
 	}
 
@@ -18,7 +24,7 @@ void execute_command(char **args)
 	if (pid == 0)
 	{
 		execve(cmd_path, args, environ);
-		perror("./shell");
+		perror("./hsh");
 		exit(EXIT_FAILURE);
 	}
 	else
