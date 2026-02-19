@@ -2,10 +2,6 @@
 
 int last_status = 0;
 
-/**
- * main - simple shell
- * Return: exit status
- */
 int main(void)
 {
 	char *line = NULL;
@@ -36,28 +32,8 @@ int main(void)
 		}
 		args[i] = NULL;
 
-		if (!args[0])
-			continue;
-
-		/* EXIT built-in */
-		if (strcmp(args[0], "exit") == 0)
-			break;
-
-		/* ENV built-in */
-		if (strcmp(args[0], "env") == 0)
-		{
-			int j = 0;
-			while (environ[j])
-			{
-				write(STDOUT_FILENO, environ[j], strlen(environ[j]));
-				write(STDOUT_FILENO, "\n", 1);
-				j++;
-			}
-			continue;
-		}
-
-		/* Other commands */
-		execute_command(args);
+		if (args[0])
+			execute_command(args);
 	}
 
 	free(line);
