@@ -1,1 +1,24 @@
-
+.TH simple_shell 1 "February 2026" "1.0" "Simple Shell Manual"
+.SH NAME
+simple_shell \- a simple command line interpreter
+.SH SYNOPSIS
+.B ./simple_shell
+.RI [ command ... ]
+.SH DESCRIPTION
+The simple_shell program is a basic Unix shell written in C. It executes commands by searching the PATH and launching processes using fork and execve. It supports the following built-in commands:
+.TP
+exit
+Exit the shell.
+.TP
+env
+Print the current environment.
+.SH USAGE
+Start the shell:
+.RS
+$ ./simple_shell
+$ ls
+$ env
+$ exit
+.RE
+.SH AUTHOR
+Your Name
