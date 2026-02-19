@@ -9,6 +9,7 @@
 #include <sys/wait.h>
 
 extern char **environ;
+extern int last_status;
 
 char *find_command(char *command);
 void execute_command(char **args);
