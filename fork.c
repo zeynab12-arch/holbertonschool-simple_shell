@@ -2,10 +2,6 @@
 
 extern int last_status;
 
-/**
- * execute_command - executes a command
- * @args: argument array
- */
 void execute_command(char **args)
 {
 	pid_t pid;
@@ -14,12 +10,6 @@ void execute_command(char **args)
 
 	if (!args || !args[0])
 		return;
-
-	/* BUILTIN EXIT */
-	if (strcmp(args[0], "exit") == 0)
-	{
-		exit(last_status);
-	}
 
 	cmd_path = find_command(args[0]);
 
