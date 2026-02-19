@@ -9,7 +9,6 @@ char *find_command(char *command)
 {
 	char *path, *path_copy, *dir;
 	char full_path[1024];
-	struct stat st;
 
 	/* If command contains / */
 	if (strchr(command, '/'))
@@ -24,6 +23,9 @@ char *find_command(char *command)
 		return (NULL);
 
 	path_copy = strdup(path);
+	if (!path_copy)
+		return (NULL);
+
 	dir = strtok(path_copy, ":");
 
 	while (dir)
