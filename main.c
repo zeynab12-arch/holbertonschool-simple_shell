@@ -37,7 +37,12 @@ int main(void)
 		args[i] = NULL;
 
 		if (args[0])
+		{
+			if (strcmp(args[0], "exit") == 0)
+				break;
+
 			execute_command(args);
+		}
 	}
 
 	free(line);
