@@ -1,6 +1,6 @@
 #include "shell.h"
 
-int last_status = 0;
+extern int last_status;
 
 /**
  * execute_command - executes a command
