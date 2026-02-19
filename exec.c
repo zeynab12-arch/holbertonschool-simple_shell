@@ -1,16 +1,16 @@
 #include "shell.h"
 
 /**
- * find_command - finds command in PATH
+ * find_command - finds the full path of a command in PATH
  * @command: command name
- * Return: full path or NULL
+ * Return: full path string if exists, else NULL
  */
 char *find_command(char *command)
 {
 	char *path, *path_copy, *dir;
 	char full_path[1024];
 
-	/* If command contains / */
+	/* If command contains /, check directly */
 	if (strchr(command, '/'))
 	{
 		if (access(command, X_OK) == 0)
@@ -27,11 +27,9 @@ char *find_command(char *command)
 		return (NULL);
 
 	dir = strtok(path_copy, ":");
-
 	while (dir)
 	{
 		sprintf(full_path, "%s/%s", dir, command);
-
 		if (access(full_path, X_OK) == 0)
 		{
 			free(path_copy);
