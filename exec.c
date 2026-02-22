@@ -1,36 +1,16 @@
 #include "shell.h"
 
 /**
- * find_path - finds PATH value from environ
- * Return: pointer to PATH string or NULL
- */
-char *find_path(void)
-{
-	int i = 0;
-	char *path = NULL;
-
-	while (environ[i])
-	{
-		if (strncmp(environ[i], "PATH=", 5) == 0)
-		{
-			path = environ[i] + 5; /* skip "PATH=" */
-			break;
-		}
-		i++;
-	}
-	return (path);
-}
-
-/**
- * find_command - finds full path of command in PATH
+ * find_command - finds the full path of a command in PATH
  * @command: command name
- * Return: full path string or NULL
+ * Return: full path string if exists, else NULL
  */
 char *find_command(char *command)
 {
 	char *path, *path_copy, *dir;
 	char full_path[1024];
 
+	/* If command contains /, check directly */
 	if (strchr(command, '/'))
 	{
 		if (access(command, X_OK) == 0)
@@ -38,7 +18,7 @@ char *find_command(char *command)
 		return (NULL);
 	}
 
-	path = find_path();
+	path = getenv("PATH");
 	if (!path)
 		return (NULL);
 
