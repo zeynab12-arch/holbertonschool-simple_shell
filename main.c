@@ -23,6 +23,7 @@ int main(void)
 			line[read - 1] = '\0';
 
 		args = split_line(line);
+
 		if (args && args[0])
 			execute_command(args);
 
