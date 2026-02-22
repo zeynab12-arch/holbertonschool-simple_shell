@@ -1,35 +1,41 @@
 #include "shell.h"
 
+int last_status = 0;
+
 int main(void)
 {
 	char *line = NULL;
 	size_t len = 0;
 	ssize_t read;
-	char **args;
+	char *token;
+	char *args[100];
+	int i;
 
 	while (1)
 	{
 		if (isatty(STDIN_FILENO))
-			printf("($) ");
+			write(STDOUT_FILENO, "$ ", 2);
 
 		read = getline(&line, &len, stdin);
 		if (read == -1)
-		{
-			free(line);
-			exit(0);
-		}
+			break;
 
-		if (line[read - 1] == '\n')
+		if (read > 1 && line[read - 1] == '\n')
 			line[read - 1] = '\0';
 
-		args = split_line(line);
+		i = 0;
+		token = strtok(line, " \t");
+		while (token && i < 99)
+		{
+			args[i++] = token;
+			token = strtok(NULL, " \t");
+		}
+		args[i] = NULL;
 
-		if (args && args[0])
+		if (args[0])
 			execute_command(args);
-
-		free_args(args);
 	}
 
 	free(line);
-	return (0);
+	return (last_status);
 }
