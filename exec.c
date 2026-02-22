@@ -1,28 +1,63 @@
 #include "shell.h"
 
-void execute_command(char **argv)
+/**
+ * find_path - finds PATH value from environ
+ * Return: pointer to PATH string or NULL
+ */
+char *find_path(void)
 {
-	pid_t pid;
-	char *cmd_path;
+	int i = 0;
+	char *path = NULL;
 
-	cmd_path = find_command(argv[0]);
-	if (cmd_path == NULL)
+	while (environ[i])
 	{
-		fprintf(stderr, "./hsh: 1: %s: not found\n", argv[0]);
-		return;
+		if (strncmp(environ[i], "PATH=", 5) == 0)
+		{
+			path = environ[i] + 5; /* skip "PATH=" */
+			break;
+		}
+		i++;
+	}
+	return (path);
+}
+
+/**
+ * find_command - finds full path of command in PATH
+ * @command: command name
+ * Return: full path string or NULL
+ */
+char *find_command(char *command)
+{
+	char *path, *path_copy, *dir;
+	char full_path[1024];
+
+	if (strchr(command, '/'))
+	{
+		if (access(command, X_OK) == 0)
+			return (strdup(command));
+		return (NULL);
 	}
 
-	pid = fork();
-	if (pid == 0)
+	path = find_path();
+	if (!path)
+		return (NULL);
+
+	path_copy = strdup(path);
+	if (!path_copy)
+		return (NULL);
+
+	dir = strtok(path_copy, ":");
+	while (dir)
 	{
-		if (execve(cmd_path, argv, environ) == -1)
-			perror("Error");
-		exit(1);
-	}
-	else
-	{
-		wait(NULL);
+		sprintf(full_path, "%s/%s", dir, command);
+		if (access(full_path, X_OK) == 0)
+		{
+			free(path_copy);
+			return (strdup(full_path));
+		}
+		dir = strtok(NULL, ":");
 	}
 
-	free(cmd_path);
+	free(path_copy);
+	return (NULL);
 }
