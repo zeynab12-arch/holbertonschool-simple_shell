@@ -1,41 +1,43 @@
 #include "shell.h"
 
-extern int last_status;
-
 /**
- * execute_command - forks and executes a command if it exists
- * @args: argument array
+ * execute_command - executes a command
+ * @args: command arguments
+ * Return: void
  */
 void execute_command(char **args)
 {
 	pid_t pid;
 	int status;
-	char *cmd_path;
+	char *command;
 
-	if (!args || !args[0])
-		return;
+	command = find_command(args[0]);
 
-	cmd_path = find_command(args[0]);
-	if (!cmd_path)
+	if (command == NULL)
 	{
 		fprintf(stderr, "./shell: 1: %s: not found\n", args[0]);
-		last_status = 127;
 		return;
 	}
 
 	pid = fork();
-	if (pid == 0)
+
+	if (pid == -1)
 	{
-		execve(cmd_path, args, environ);
-		perror("./shell");
-		exit(1);
-	}
-	else
-	{
-		wait(&status);
-		if (WIFEXITED(status))
-			last_status = WEXITSTATUS(status);
+		perror("fork");
+		free(command);
+		return;
 	}
 
-	free(cmd_path);
+	if (pid == 0)
+	{
+		if (execve(command, args, NULL) == -1)
+		{
+			perror("./shell");
+			free(command);
+			exit(1);
+		}
+	}
+
+	wait(&status);
+	free(command);
 }
